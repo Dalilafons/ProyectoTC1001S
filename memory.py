@@ -12,11 +12,12 @@ from turtle import *    # Imports all functions from the turtle graphics module
 from freegames import path    # Imports the path function from freegames package
 
 car = path('car.gif')    # Loads the car image to be used as background
-tiles = list(range(32)) * 2    # Creates a list of numbers 0-31, each appearing twice (64 total)
+tiles = list(range(8)) * 2    # Creates a list of numbers 0-7, each appearing twice (16 total)
 state = {'mark': None}    # Dictionary to keep track of the currently selected tile
-hide = [True] * 64    # List tracking which tiles are hidden (all start as hidden)
+hide = [True] * 16    # List tracking which tiles are hidden (all start as hidden)
 pairs_found = 0    # Counter for the number of pairs found
 game_complete = False    # Flag to track if the game is complete
+tap_count = 0    # Counter for the number of taps
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -32,30 +33,32 @@ def square(x, y):
 
 def index(x, y):
     """Convert (x, y) coordinates to tiles index."""
-    # Calculates the tile index from screen coordinates
-    # +200 adjusts for the coordinate system offset
-    # //50 converts pixels to tile units (each tile is 50x50)
-    # *8 for the row calculation accounts for 8 tiles per row
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
+    # Adjusted for a 4x4 grid (4 columns)
+    return int((x + 100) // 50 + ((y + 100) // 50) * 4)
 
 def xy(count):
     """Convert tiles count to (x, y) coordinates."""
-    # Converts a tile index back to screen coordinates
-    # count % 8 gives the column position (0-7)
-    # count // 8 gives the row position (0-7)
-    # *50 converts tile units to pixels
-    # -200 adjusts for the coordinate system offset
-    return (count % 8) * 50 - 200, (count // 8) * 50 - 200
+    # Adjusted for a 4x4 grid (4 columns)
+    return (count % 4) * 50 - 100, (count // 4) * 50 - 100
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
-    global pairs_found, game_complete    # Access the global counters
+    global pairs_found, game_complete, tap_count    # Access the global counters
     
     # Don't process taps if game is already complete
     if game_complete:
         return
+    
+    # Increment tap counter
+    tap_count += 1
+    print(f"Tap count: {tap_count}")
         
     spot = index(x, y)    # Converts tap coordinates to a tile index
+    
+    # Check if the tap is within the valid grid area
+    if spot < 0 or spot >= 16:
+        return
+        
     mark = state['mark']    # Gets the currently marked tile (if any)
     
     # Logic for handling tile selection:
@@ -71,8 +74,8 @@ def tap(x, y):
         state['mark'] = None    # Clear the mark
         pairs_found += 1    # Increment the pairs found counter
         
-        # Check if all pairs have been found (32 pairs total)
-        if pairs_found == 32:
+        # Check if all pairs have been found (8 pairs total)
+        if pairs_found == 8:
             game_complete = True
             print("¡Felicidades! Has encontrado todos los pares.")
 
@@ -84,7 +87,7 @@ def draw():
     stamp()    # Stamps the car image onto the background
     
     # Draw all hidden tiles
-    for count in range(64):    # Loops through all 64 tile positions
+    for count in range(16):    # Loops through all 16 tile positions
         if hide[count]:    # Only draws tiles that are still hidden
             x, y = xy(count)    # Gets the screen coordinates for this tile
             square(x, y)    # Draws a square at those coordinates
@@ -94,28 +97,35 @@ def draw():
     if mark is not None and hide[mark]:    # If a tile is marked and it's hidden
         x, y = xy(mark)    # Gets the screen coordinates for the marked tile
         up()    # Lifts the pen
-        goto(x + 2, y)    # Moves to a position slightly offset from the tile's corner
+        # Center single-digit numbers in the tile
+        goto(x + 20, y + 5)    # Centers the digit in the tile
         color('black')    # Sets text color to black
-        write(tiles[mark], font=('Arial', 30, 'normal'))    # Writes the tile's value
+        write(tiles[mark], font=('Arial', 30, 'normal'), align='center')    # Writes the tile's value centered
     
     # Display the number of pairs found
     up()    # Lifts the pen
-    goto(-190, -180)    # Positions the text at the bottom left
+    goto(-95, -95)    # Positions the text at the bottom left
     color('blue')    # Sets text color to blue
-    write(f"Pairs found: {pairs_found} / 32", font=('Arial', 16, 'normal'))    # Writes the pairs counter
+    write(f"Pairs found: {pairs_found} / 8", font=('Arial', 12, 'normal'))    # Writes the pairs counter
+    
+    # Display tap count
+    up()
+    goto(-95, -120)
+    color('purple')
+    write(f"Taps: {tap_count}", font=('Arial', 12, 'normal'))
     
     # Display completion message when game is complete
     if game_complete:
         up()
-        goto(-150, 0)    # Position in the center of screen
+        goto(0, 0)    # Position in the center of screen
         color('green')
-        write("¡JUEGO COMPLETADO!", font=('Arial', 24, 'bold'))
+        write("¡JUEGO COMPLETADO!", font=('Arial', 18, 'bold'), align='center')
     
     update()    # Updates the screen with all the changes
     ontimer(draw, 100)    # Schedules the draw function to run again in 100ms
 
 shuffle(tiles)    # Randomly shuffles the tile values before starting the game
-setup(420, 420, 370, 0)    # Sets up the screen dimensions and position
+setup(220, 220, 370, 0)    # Sets up the screen dimensions and position for 4x4 grid
 addshape(car)    # Registers the car image as a valid turtle shape
 hideturtle()    # Hides the turtle cursor
 tracer(False)    # Turns off animation updates for smoother drawing
