@@ -84,6 +84,44 @@ Este proyecto es una implementación del clásico juego de **Pac-Man** en Python
    pip install freegames
 
 
+---
+# Memory Game - Proyecto Mejorado
+
+## Descripción
+Este proyecto es una implementación del clásico juego de **Memory** en Python utilizando la librería `turtle` y `freegames`. El juego consiste en un tablero de 4x4 donde el jugador debe encontrar pares de números ocultos. Se han realizado mejoras en la estructura del código, la claridad y la funcionalidad, como la adición de un contador de toques (taps), un mensaje de finalización del juego y un contador de pares encontrados.
+
+## Cambios Realizados
+
+**1. Reducción del Tablero a 4x4**
+* Se ajustó el tamaño del tablero a una cuadrícula de **4x4**, lo que hace el juego más manejable y adecuado para una experiencia rápida y divertida.
+
+**2. Contador de Toques (Taps)**
+* Se añadió un contador que registra cuántos toques realiza el jugador durante la partida. Esto permite al jugador medir su eficiencia al encontrar los pares.
+
+**3. Mensaje de Finalización del Juego**
+* Se implementó un mensaje que se muestra cuando el jugador encuentra todos los pares, indicando que el juego ha sido completado.
+
+**4. Contador de Pares Encontrados**
+* Se añadió un contador que muestra cuántos pares ha encontrado el jugador en tiempo real, lo que proporciona retroalimentación inmediata sobre su progreso.
+
+**5. Mejoras en la Estructura del Código**
+* Se refactorizó el código para mejorar su legibilidad y organización. Esto incluye:
+   * Uso de funciones específicas en lugar de importaciones con `*`.
+   * Eliminación de líneas innecesarias y espacios en blanco.
+   * Corrección de líneas que excedían los **79 caracteres** (`E501`).
+   * Adición de líneas en blanco donde era requerido (`E305`).
+---
+
+## Instrucciones para Ejecutar el Juego
+
+1. Asegúrate de tener **Python** instalado.
+2. Instala la librería `freegames` si no la tienes:
+   ```bash
+   pip install freegames
+
+
+---
 ## Autores
 **Dalila Fonseca Maya A01711722**
 **Alejandro Lemus Salgado A01770848**  
+**Matías Piedra Pichardo A01772503**
