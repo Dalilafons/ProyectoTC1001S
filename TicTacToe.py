@@ -11,17 +11,24 @@ def grid():
 
 
 def drawx(x, y):
-    """Dibuja una X."""
-    line(x, y, x + 133, y + 133)
-    line(x, y + 133, x + 133, y)
+    """Dibuja una X morada y centrada."""
+    turtle.color("purple")  # Color morado
+    turtle.width(8)         # Grosor de línea
+    offset = 30             # Espaciado para centrar la X
+
+    line(x + offset, y + offset, x + 133 - offset, y + 133 - offset)
+    line(x + offset, y + 133 - offset, x + 133 - offset, y + offset)
 
 
 def drawo(x, y):
-    """Dibuja una O."""
+    """Dibuja una O rosa y centrada."""
+    turtle.color("pink")  # Color rosa
+    turtle.width(8)       # Grosor de línea
+
     turtle.up()
-    turtle.goto(x + 67, y + 5)
+    turtle.goto(x + 67, y + 10)  # Centro ajustado
     turtle.down()
-    turtle.circle(62)
+    turtle.circle(57)  # Tamaño ajustado para encajar en la casilla
 
 
 def floor(value):
