@@ -16,6 +16,7 @@ tiles = list(range(32)) * 2    # Creates a list of numbers 0-31, each appearing 
 state = {'mark': None}    # Dictionary to keep track of the currently selected tile
 hide = [True] * 64    # List tracking which tiles are hidden (all start as hidden)
 pairs_found = 0    # Counter for the number of pairs found
+game_complete = False    # Flag to track if the game is complete
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -48,7 +49,12 @@ def xy(count):
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
-    global pairs_found    # Access the global pairs_found counter
+    global pairs_found, game_complete    # Access the global counters
+    
+    # Don't process taps if game is already complete
+    if game_complete:
+        return
+        
     spot = index(x, y)    # Converts tap coordinates to a tile index
     mark = state['mark']    # Gets the currently marked tile (if any)
     
@@ -64,6 +70,11 @@ def tap(x, y):
         hide[mark] = False    # Reveal the previously marked tile
         state['mark'] = None    # Clear the mark
         pairs_found += 1    # Increment the pairs found counter
+        
+        # Check if all pairs have been found (32 pairs total)
+        if pairs_found == 32:
+            game_complete = True
+            print("¡Felicidades! Has encontrado todos los pares.")
 
 def draw():
     """Draw image and tiles."""
@@ -92,6 +103,13 @@ def draw():
     goto(-190, -180)    # Positions the text at the bottom left
     color('blue')    # Sets text color to blue
     write(f"Pairs found: {pairs_found} / 32", font=('Arial', 16, 'normal'))    # Writes the pairs counter
+    
+    # Display completion message when game is complete
+    if game_complete:
+        up()
+        goto(-150, 0)    # Position in the center of screen
+        color('green')
+        write("¡JUEGO COMPLETADO!", font=('Arial', 24, 'bold'))
     
     update()    # Updates the screen with all the changes
     ontimer(draw, 100)    # Schedules the draw function to run again in 100ms
