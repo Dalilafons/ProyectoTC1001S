@@ -9,6 +9,7 @@ Features:
 - Adjustable Pac-Man speed.
 - Basic AI for ghost movement.
 """
+
 from random import choice
 from turtle import (
     bgcolor, clear, done, goto, hideturtle, listen, onkey,
@@ -23,6 +24,7 @@ score_writer = Turtle(visible=False)  # Turtle to display the score
 pacman_direction = vector(5, 0)  # Pac-Man's movement direction
 pacman_position = vector(-40, -80)  # Initial position of Pac-Man
 
+
 # List of ghosts with their positions and movement directions
 ghosts = [
     [vector(-180, 160), vector(5, 0)],
@@ -35,6 +37,7 @@ ghosts = [
 tiles = [
     # [your tiles list remains the same]
 ]
+
 
 def draw_square(x, y):
     """Draw a square at the given (x, y) position."""
@@ -63,30 +66,30 @@ def is_valid_move(point):
     if tiles[index] == 0:
         return False
 
-    index = get_tile_index(point + 29)  # Adjusted for 30-sized cells
+    index = get_tile_index(point + 29)  # Adjusted for cell size
     if tiles[index] == 0:
         return False
 
-    return point.x % 30 == 0 or point.y % 30 == 0  # Adjusted for 30-sized cells
+    return point.x % 30 == 0 or point.y % 30 == 0  # Adjusted for cell size
 
 
 def draw_board():
     """Render the game board."""
-    bgcolor('fuchsia')  # Changed background color to fuchsia
+    bgcolor('fuchsia')  # Changed background color
     path_drawer.color('blue')
 
     for index, tile in enumerate(tiles):
         if tile > 0:
-            x = (index % 20) * 30 - 200  # Adjusted for 30-sized cells
-            y = 180 - (index // 20) * 30  # Adjusted for 30-sized cells
+            x = (index % 20) * 30 - 200  # Adjusted for cell size
+            y = 180 - (index // 20) * 30  # Adjusted for cell size
             draw_square(x, y)
 
             if tile == 1:
                 path_drawer.up()
-                path_drawer.goto(x + 15, y + 15)  # Positioning for the new size
+                path_drawer.goto(x + 15, y + 15)
                 path_drawer.begin_fill()
-                path_drawer.color('orange')  # Changed food color to bright orange
-                path_drawer.circle(8)  # Draws an "orange" circle instead of a dot
+                path_drawer.color('orange')  # Changed food color
+                path_drawer.circle(8)  # Draws an "orange" circle
                 path_drawer.end_fill()
 
 
@@ -105,12 +108,12 @@ def move_characters():
     if tiles[index] == 1:
         tiles[index] = 2
         state['score'] += 1
-        x = (index % 20) * 30 - 200  # Adjusted for 30-sized cells
-        y = 180 - (index // 20) * 30  # Adjusted for 30-sized cells
+        x = (index % 20) * 30 - 200  # Adjusted for cell size
+        y = 180 - (index // 20) * 30  # Adjusted for cell size
         draw_square(x, y)
 
     up()
-    goto(pacman_position.x + 15, pacman_position.y + 15)  # Adjusted for 30-sized cells
+    goto(pacman_position.x + 15, pacman_position.y + 15)
     dot(20, 'pink')  # Changed Pac-Man's color to neon pink
 
     for ghost_position, ghost_direction in ghosts:
@@ -122,7 +125,7 @@ def move_characters():
             ])
 
         up()
-        goto(ghost_position.x + 15, ghost_position.y + 15)  # Adjusted for 30-sized cells
+        goto(ghost_position.x + 15, ghost_position.y + 15)
         dot(20, 'cyan')  # Changed ghost color to electric blue
 
     update()
@@ -131,7 +134,8 @@ def move_characters():
         if abs(pacman_position - ghost_position) < 20:
             return  # Game over if a ghost catches Pac-Man
 
-    ontimer(move_characters, 100)  # Adjusted the speed if needed
+    # Adjusted the speed of ghost movement to make them move faster
+    ontimer(move_characters, 50)  # Reduced time for faster ghost movement
 
 
 def change_direction(x, y):
@@ -142,12 +146,12 @@ def change_direction(x, y):
 
 
 # Game setup
-setup(600, 600, 370, 0)  # Increased the window size for the new board
+setup(600, 600, 370, 0)
 hideturtle()
 tracer(False)
 
 # Initialize score display
-score_writer.goto(200, 200)  # Adjusted for larger window size
+score_writer.goto(200, 200)  # Larger window size
 score_writer.color('white')
 score_writer.write(state['score'])
 
