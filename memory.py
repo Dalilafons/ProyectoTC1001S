@@ -5,6 +5,7 @@ Exercises:
 3. Detect when all tiles are revealed.
 4. Center single-digit tile.
 5. Use letters instead of tiles.
+6. Count and display the number of pairs discovered.
 """
 from random import *    # Imports all functions from the random module
 from turtle import *    # Imports all functions from the turtle graphics module
@@ -14,6 +15,7 @@ car = path('car.gif')    # Loads the car image to be used as background
 tiles = list(range(32)) * 2    # Creates a list of numbers 0-31, each appearing twice (64 total)
 state = {'mark': None}    # Dictionary to keep track of the currently selected tile
 hide = [True] * 64    # List tracking which tiles are hidden (all start as hidden)
+pairs_found = 0    # Counter for the number of pairs found
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -46,6 +48,7 @@ def xy(count):
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
+    global pairs_found    # Access the global pairs_found counter
     spot = index(x, y)    # Converts tap coordinates to a tile index
     mark = state['mark']    # Gets the currently marked tile (if any)
     
@@ -60,6 +63,7 @@ def tap(x, y):
         hide[spot] = False    # Reveal the current tile
         hide[mark] = False    # Reveal the previously marked tile
         state['mark'] = None    # Clear the mark
+        pairs_found += 1    # Increment the pairs found counter
 
 def draw():
     """Draw image and tiles."""
@@ -82,6 +86,12 @@ def draw():
         goto(x + 2, y)    # Moves to a position slightly offset from the tile's corner
         color('black')    # Sets text color to black
         write(tiles[mark], font=('Arial', 30, 'normal'))    # Writes the tile's value
+    
+    # Display the number of pairs found
+    up()    # Lifts the pen
+    goto(-190, -180)    # Positions the text at the bottom left
+    color('blue')    # Sets text color to blue
+    write(f"Pairs found: {pairs_found} / 32", font=('Arial', 16, 'normal'))    # Writes the pairs counter
     
     update()    # Updates the screen with all the changes
     ontimer(draw, 100)    # Schedules the draw function to run again in 100ms
