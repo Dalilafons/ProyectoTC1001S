@@ -36,7 +36,7 @@ def floor(value):
     return ((value + 200) // 133) * 133 - 200
 
 
-state = {'player': 0}          # Jugador actual (0 = X, 1 = O)
+state = {'player': 0, 'game_over': False}  # game_over para bloquear clics
 players = [drawx, drawo]       # Lista de funciones
 board = {}                     # Casillas ocupadas
 
@@ -53,8 +53,44 @@ def mostrar_mensaje(texto):
     msg.write(texto, align="center", font=("Arial", 14, "normal"))
 
 
+def check_winner():
+    """Verifica si hay un ganador antes de evaluar empate."""
+    # Coordenadas ajustadas con floor(): -200, -67, 66
+    C = [-200, -67, 66]
+
+    posiciones_ganadoras = [
+        # Filas
+        [(C[0], C[2]), (C[1], C[2]), (C[2], C[2])],
+        [(C[0], C[1]), (C[1], C[1]), (C[2], C[1])],
+        [(C[0], C[0]), (C[1], C[0]), (C[2], C[0])],
+        # Columnas
+        [(C[0], C[2]), (C[0], C[1]), (C[0], C[0])],
+        [(C[1], C[2]), (C[1], C[1]), (C[1], C[0])],
+        [(C[2], C[2]), (C[2], C[1]), (C[2], C[0])],
+        # Diagonales
+        [(C[0], C[2]), (C[1], C[1]), (C[2], C[0])],
+        [(C[0], C[0]), (C[1], C[1]), (C[2], C[2])]
+    ]
+
+    for jugador in [0, 1]:
+        for combinacion in posiciones_ganadoras:
+            if all(
+                casilla in board and board[casilla] == jugador
+                for casilla in combinacion
+            ):
+                return jugador  # Retorna el jugador ganador
+
+    if len(board) == 9:
+        return "empate"
+
+    return None
+
+
 def tap(x, y):
-    """Dibuja X u O solo si está libre la casilla."""
+    """Dibuja X u O solo si está libre la casilla y verifica el resultado."""
+    if state['game_over']:  # Evita clics tras finalizar el juego
+        return
+
     x = floor(x)
     y = floor(y)
 
@@ -69,8 +105,23 @@ def tap(x, y):
     draw(x, y)
     turtle.update()
 
-    state['player'] = not player  # Cambia de jugador
-    msg.clear()  # Limpia cualquier mensaje anterior
+    resultado = check_winner()
+
+    if resultado == 0:
+        mostrar_mensaje("¡Ganó X! 🎉")
+        state['game_over'] = True
+        turtle.onscreenclick(None)  # Bloquea más clics
+    elif resultado == 1:
+        mostrar_mensaje("¡Ganó O! 🎉")
+        state['game_over'] = True
+        turtle.onscreenclick(None)
+    elif resultado == "empate":
+        mostrar_mensaje("¡Empate! 🤝")
+        state['game_over'] = True
+        turtle.onscreenclick(None)
+    else:
+        state['player'] = not player  # Cambia de turno
+        msg.clear()
 
 
 turtle.setup(420, 420, 370, 0)     # Tamaño de ventana
