@@ -50,7 +50,7 @@ msg.goto(0, -190)  # Posición baja de la pantalla
 def mostrar_mensaje(texto):
     """Muestra un mensaje en pantalla y lo borra después."""
     msg.clear()
-    msg.write(texto, align="center", font=("Arial", 14, "normal"))
+    msg.write(texto, align="center", font=("Arial", 16, "normal"))
 
 
 def check_winner():
@@ -99,8 +99,7 @@ def tap(x, y):
         return
 
     player = state['player']
-    board[(x, y)] = players
-
+    board[(x, y)] = player
     draw = players[player]
     draw(x, y)
     turtle.update()
