@@ -38,17 +38,39 @@ def floor(value):
 
 state = {'player': 0}          # Jugador actual (0 = X, 1 = O)
 players = [drawx, drawo]       # Lista de funciones
+board = {}                     # Casillas ocupadas
+
+# Crear un turtle para mostrar mensajes
+msg = turtle.Turtle()
+msg.hideturtle()
+msg.penup()
+msg.goto(0, -190)  # Posición baja de la pantalla
+
+
+def mostrar_mensaje(texto):
+    """Muestra un mensaje en pantalla y lo borra después."""
+    msg.clear()
+    msg.write(texto, align="center", font=("Arial", 14, "normal"))
 
 
 def tap(x, y):
-    """Dibuja X u O donde se hace clic."""
+    """Dibuja X u O solo si está libre la casilla."""
     x = floor(x)
     y = floor(y)
+
+    if (x, y) in board:
+        mostrar_mensaje("¡Casilla ocupada!😅")
+        return
+
     player = state['player']
+    board[(x, y)] = players
+
     draw = players[player]
     draw(x, y)
     turtle.update()
+
     state['player'] = not player  # Cambia de jugador
+    msg.clear()  # Limpia cualquier mensaje anterior
 
 
 turtle.setup(420, 420, 370, 0)     # Tamaño de ventana
